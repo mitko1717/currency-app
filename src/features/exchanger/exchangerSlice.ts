@@ -3,16 +3,18 @@ import { RootState, AppThunk } from '../../app/store';
 
 export interface ExchangeState {
   value: number;
+  apiKey: string;
 }
 
 const initialState: ExchangeState = {
   value: 0,
+  apiKey: "sl019KNIxtWfvkwDtbX44yGdJYCB7bD9",
 };
 
-export const getExchange = createAsyncThunk("weather", async (city: string) => {
+export const getExchange = createAsyncThunk("weather", async (currency: string) => {  
   try {
     const res = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=&units=metric`
+      `https://api.apilayer.com/fixer/latest?base=UAH&symbols=${currency}&apikey=${initialState.apiKey}`
     ).then((data) => data.json());
 
     return res;
