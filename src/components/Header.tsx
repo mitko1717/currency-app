@@ -1,9 +1,43 @@
-const Header = () => {
-    return (
-        <div>
-            <h2>current exchange</h2>
-        </div>
-    )
-}
+import { useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
+import { state, getExchange } from "../features/exchanger/exchangerSlice";
 
-export default Header
+const Header = () => {
+  const { uah_currencies_header, currencies } = useAppSelector(state);
+  const dispatch = useAppDispatch();
+
+  const getExchangeHandler = async (currency: string) => {
+    // await dispatch(getExchange({currencyBase: currency, targetCode: "UAH"}));
+  };
+
+  useEffect(() => {
+    currencies.forEach((currency: any) => {
+      currency !== "UAH" && getExchangeHandler(currency);
+    });
+  }, [currencies]);
+
+  return (
+    <div className="flex bg-slate-400 p-4 h-[10vh] w-full flex-col">
+      <h2 className="text-center uppercase text-2xl">current uah exchange</h2>
+      {uah_currencies_header && uah_currencies_header.length > 0 ? (
+        <div className="flex mx-auto my-2">
+          {uah_currencies_header.map((currency) => {
+            return (
+              <p
+                key={currency.base_code}
+                className="mx-2 inline-block font-bold"
+              >
+                1 {currency.base_code} = {currency.conversion_rate.toFixed(2)}{" "}
+                UAH
+              </p>
+            );
+          })}
+        </div>
+      ) : (
+        <div></div>
+      )}
+    </div>
+  );
+};
+
+export default Header;

@@ -1,5 +1,5 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import exchangerReducer from '../features/exchanger/exchangerSlice';
+import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import exchangerReducer from "../features/exchanger/exchangerSlice";
 
 export const store = configureStore({
   reducer: {
