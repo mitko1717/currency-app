@@ -1,10 +1,11 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction, current } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 
 interface ExchangeState {
   apiKey: string;
   uah_currencies_header: any[];
   currencies: string[];
+  apiResult: any;
 }
 
 interface GetExchangeArgs {
@@ -17,18 +18,31 @@ const initialState: ExchangeState = {
   apiKey: "8e3a026fbe1be88137e9cf1c",
   uah_currencies_header: [],
   currencies: ["EUR", "USD", "UAH"],
+  apiResult: [],
 };
 
 export const getExchange = createAsyncThunk(
   "weather",
+  async (currency: string) => {
+    try {
+      const res = await fetch(
+        `https://v6.exchangerate-api.com/v6/${initialState.apiKey}/latest/${currency}`
+      ).then((data) => data.json());
+
+      return res;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+);
+
+export const getExchangeForConvertation = createAsyncThunk(
+  "currency",
   async (currency: GetExchangeArgs) => {
     const { currencyBase, targetCode } = currency;
-    console.log(currencyBase, targetCode);
 
     try {
       const res = await fetch(
-        // `https://api.apilayer.com/fixer/latest?base=UAH&symbols=${currency}&apikey=${initialState.apiKey}`
-        // `https://v6.exchangerate-api.com/v6/${initialState.apiKey}/latest/${currency}`
         `https://v6.exchangerate-api.com/v6/${initialState.apiKey}/pair/${currencyBase}/${targetCode}`
       ).then((data) => data.json());
 
@@ -42,16 +56,19 @@ export const getExchange = createAsyncThunk(
 export const exchangerSlice = createSlice({
   name: "exchange",
   initialState,
-  reducers: {
-    // addCurrency: (state, action) => {
-    //   state.uah_currencies.push(action.payload);
-    // },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(
       getExchange.fulfilled,
       (state: any, action: PayloadAction<any>) => {
         state.uah_currencies_header.push(action.payload);
+      }
+    );
+    builder.addCase(
+      getExchangeForConvertation.fulfilled,
+      (state: any, action: PayloadAction<any>) => {
+        state.apiResult = []
+        state.apiResult.push(action.payload)
       }
     );
   },
