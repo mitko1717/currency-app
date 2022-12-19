@@ -1,4 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction, current } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+  current,
+} from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 
 interface ExchangeState {
@@ -14,7 +19,6 @@ interface GetExchangeArgs {
 }
 
 const initialState: ExchangeState = {
-  // apiKey: "sl019KNIxtWfvkwDtbX44yGdJYCB7bD9",
   apiKey: "8e3a026fbe1be88137e9cf1c",
   uah_currencies_header: [],
   currencies: ["EUR", "USD", "UAH"],
@@ -67,14 +71,12 @@ export const exchangerSlice = createSlice({
     builder.addCase(
       getExchangeForConvertation.fulfilled,
       (state: any, action: PayloadAction<any>) => {
-        state.apiResult = []
-        state.apiResult.push(action.payload)
+        state.apiResult = [];
+        state.apiResult.push(action.payload);
       }
     );
   },
 });
-
-export const {} = exchangerSlice.actions;
 
 export const state = (state: RootState) => state.exchange;
 
